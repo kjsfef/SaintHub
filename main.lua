@@ -59,13 +59,6 @@ for _, exec in ipairs({"Xeno", "Solara"}) do
 end
 
 -- ===================== TASK =====================
-local Task = {}
-
-function Task()
-    local status, res1, res2 = pcall(function()
-        local api = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
-        api.script_id = script_id
-        pcall(function() api.load_script() end)
         
         -- ===================== GUI =====================
         local LSMT = game:GetObjects("rbxassetid://126113170246030")[1]
