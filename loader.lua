@@ -1,17 +1,16 @@
--- ===================== SAINT HUB LOADER =====================
+-- Saint Hub Loader
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
 local CoreGui = gethui and gethui() or game:GetService("CoreGui")
-local LocalPlayer = Players.LocalPlayer
 
--- Create Blur Effect
+-- Blur effect
 local blur = Instance.new("BlurEffect")
 blur.Size = 0
 blur.Parent = Lighting
 TweenService:Create(blur, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { Size = 35 }):Play()
 
--- Create GUI
+-- ScreenGui
 local gui = Instance.new("ScreenGui")
 gui.Name = "SaintHubLoader"
 gui.IgnoreGuiInset = true
@@ -23,6 +22,7 @@ root.Size = UDim2.new(1, 0, 1, 0)
 root.BackgroundTransparency = 1
 root.Parent = gui
 
+-- Background
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(15, 0, 25)
@@ -31,46 +31,29 @@ bg.ZIndex = 0
 bg.Parent = root
 TweenService:Create(bg, TweenInfo.new(0.25, Enum.EasingStyle.Sine), { BackgroundTransparency = 0.18 }):Play()
 
--- Loader Title
+-- Title letters animation
 local TITLE = "Saint Hub"
 local labels = {}
 local spacing = 48
 
--- Fade out function
-local function fadeOut()
-    for _, lbl in ipairs(labels) do
-        TweenService:Create(lbl, TweenInfo.new(0.2, Enum.EasingStyle.Sine), {
-            TextTransparency = 1,
-            TextStrokeTransparency = 1,
-            TextSize = 22
-        }):Play()
-    end
-    TweenService:Create(bg, TweenInfo.new(0.2), { BackgroundTransparency = 1 }):Play()
-    TweenService:Create(blur, TweenInfo.new(0.2), { Size = 0 }):Play()
-    task.wait(0.25)
-    gui:Destroy()
-    blur:Destroy()
-end
-
--- Animate each letter of "Saint Hub"
 for i = 1, #TITLE do
-    local char = TITLE:sub(i, i)
+    local char = TITLE:sub(i,i)
     local lbl = Instance.new("TextLabel")
     lbl.Text = char
     lbl.Font = Enum.Font.GothamBlack
-    lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+    lbl.TextColor3 = Color3.fromRGB(255,255,255)
     lbl.TextTransparency = 1
     lbl.TextStrokeTransparency = 1
     lbl.TextSize = 44
-    lbl.AnchorPoint = Vector2.new(0.5, 0.5)
-    lbl.Position = UDim2.new(0.5, (i - (#TITLE / 2 + 0.5)) * spacing, 0.5, 0)
+    lbl.AnchorPoint = Vector2.new(0.5,0.5)
+    lbl.Position = UDim2.new(0.5, (i - (#TITLE / 2 + 0.5))*spacing, 0.5, 0)
     lbl.BackgroundTransparency = 1
     lbl.Parent = root
 
     local grad = Instance.new("UIGradient")
     grad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 200, 0)),   -- Gold gradient
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255,200,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))
     })
     grad.Rotation = -45
     grad.Parent = lbl
@@ -86,8 +69,38 @@ for i = 1, #TITLE do
     }):Play()
 
     table.insert(labels, lbl)
-    task.wait(0.09) -- stagger
+    task.wait(0.09)
 end
 
-task.wait()
-fadeOut()
+-- Continue button
+local button = Instance.new("TextButton")
+button.Text = "Continue"
+button.Font = Enum.Font.GothamBold
+button.TextSize = 28
+button.TextColor3 = Color3.fromRGB(255,255,255)
+button.BackgroundColor3 = Color3.fromRGB(50,0,100)
+button.Size = UDim2.new(0,200,0,50)
+button.AnchorPoint = Vector2.new(0.5,0.5)
+button.Position = UDim2.new(0.5,0,0.75,0)
+button.Parent = root
+
+-- Hover effect
+button.MouseEnter:Connect(function()
+    TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(100,0,200)}):Play()
+end)
+button.MouseLeave:Connect(function()
+    TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50,0,100)}):Play()
+end)
+
+-- Fade out everything when clicked
+button.MouseButton1Click:Connect(function()
+    for _, lbl in ipairs(labels) do
+        TweenService:Create(lbl, TweenInfo.new(0.2), {TextTransparency = 1, TextStrokeTransparency = 1, TextSize = 22}):Play()
+    end
+    TweenService:Create(bg, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+    TweenService:Create(button, TweenInfo.new(0.2), {BackgroundTransparency = 1, TextTransparency = 1}):Play()
+    TweenService:Create(blur, TweenInfo.new(0.2), {Size = 0}):Play()
+    task.wait(0.25)
+    gui:Destroy()
+    blur:Destroy()
+end)
